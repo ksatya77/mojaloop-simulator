@@ -29,6 +29,7 @@ config:
       failureThreshold: 3
 
   schemeAdapter:
+    enableSecretMount: true
     image:
       repository: mojaloop/sdk-scheme-adapter
       tag: v8.6.1

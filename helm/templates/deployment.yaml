@@ -126,8 +126,26 @@ spec:
             name: {{ template "mojaloop-simulator.fullname" . }}-scheme-adapter-config
           resources:
 {{ toYaml .Values.config.schemeAdapter.resources | indent 12 }}
+        {{- if .Values.schemeAdapter.enableSecretMount }}
+        volumeMounts:
+          - name: {{ include "mojaloop-fxp.fullname" . }}-signingkeys
+            mountPath: /secrets
+            readOnly: true
+          - name: fsp-verificationcerts
+            mountPath: /jwsVerificationCerts
+            readOnly: true
+        {{- end }}
       imagePullSecrets:
         - name: {{ .Values.config.imagePullSecretName }}
+      {{- if .Values.schemeAdapter.enableSecretMount }}
+      volumes:
+        - name: {{ include "mojaloop-simulator.fullname" . }}-signingkeys
+          secret:
+            secretName: {{ required "Must supply secret name for Sim Signing keys using adapter.fxpSigningKeysSecretName" .Values.adapter.fxpSigningKeysSecretName }}
+        - name: fsp-verificationcerts
+          secret:
+            secretName: {{ required "Must supply secret name for Sim Certs using adapter.fspVerificationCertsSecretName" .Values.adapter.fspVerificationCertsSecretName }}
+      {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
