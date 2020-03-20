@@ -131,7 +131,7 @@ spec:
           - name: {{ include "mojaloop-fxp.fullname" . }}-signingkeys
             mountPath: /secrets
             readOnly: true
-          - name: fsp-verificationcerts
+          - name: {{ include "mojaloop-fxp.fullname" . }}-verificationcerts
             mountPath: /jwsVerificationCerts
             readOnly: true
         {{- end }}
@@ -142,7 +142,7 @@ spec:
         - name: {{ include "mojaloop-simulator.fullname" . }}-signingkeys
           secret:
             secretName: {{ required "Must supply secret name for Sim Signing keys using adapter.fxpSigningKeysSecretName" .Values.adapter.fxpSigningKeysSecretName }}
-        - name: fsp-verificationcerts
+        - name: {{ include "mojaloop-simulator.fullname" . }}-verificationcerts
           secret:
             secretName: {{ required "Must supply secret name for Sim Certs using adapter.fspVerificationCertsSecretName" .Values.adapter.fspVerificationCertsSecretName }}
       {{- end }}
